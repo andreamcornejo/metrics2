@@ -1,0 +1,27 @@
+---
+title: "Econometrics 2 HMW"
+author: "João Castello Branco and MJ"
+date: "21/03/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(BETS)
+library(tidyverse)
+library(tsibble)
+library(stargazer)
+library(knitr)
+library(forecast)
+library(dynlm) #for function `dynlm()`
+library(vars) # for function `VAR()`
+
+```
+
+# 1 Univariate Analysis
+
+The BETS [package](https://cran.r-project.org/web/packages/BETS/vignettes/BETS_basic_usage.html) provides Brazilian Economic Time series from many institutions, the source of our time series are the IBGE (Brazilian institute of geograph and statistics) for the unemployment rate and the Brazilian Central Bank (BCB) for the a monthly proxy of GDP (it is the 'contemporaneous monthly index of national economic activity' and it is seen as a preview of the GDP, which is quarterly data)
+
