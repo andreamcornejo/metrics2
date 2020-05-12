@@ -47,6 +47,57 @@ kpss.test(GDPadjusted)           #here hypothesis is h_o= stationary. small p va
 #Finding acf and pacf
 
 
+#========================================================
+# Part II. Multivariate model
+#========================================================
+
+
+## import and prepare data
+gdp <- read.csv(file.path("/Users/andreamcornejo/Dropbox/PSE/metrics_2/final project/data/GDP_stlouis_fdreserve.csv"))
+un <- read.csv(file.path("/Users/andreamcornejo/Dropbox/PSE/metrics_2/final project/data/unemployment_stlouis_fdreserve_SEASON_ADJ.csv"))
+gdp <- gdp[-c(1, 2, 3, 4), ]
+
+#data set BOTH SERIES COMBINED
+df <- data.frame(gdp=gdp$GDP, un=un$UNRATE, date=un$DATE)
+
+# format data as time series
+df$date<- NULL              #to remove the date column and only specify it as a series of data anf use frequency.
+dfts<-ts(df,frequency = 4,start = c(1948,1))
+
+
+#========================================================
+# i. Selection of the lag order of the multivariate model
+#========================================================
+
+lags <- VARselect(dfts, lag.max=12) # BIC --> 2, HQ --> 2, AIC/FPE --> 4
+print(lags)
+
+There is no one single test or method to determine the lag order of bivariate models. Using VARselect, we see
+The Schwrz Bayes info criteria (SC) yields 2, while Akaike AIC gives 4. However, for both of these, the difference
+between order 2 and 4 is not much. In this context, we will move forward with lag order 2 for simplicity. 
+
+#========================================================
+# ii. Estimation of the multivariate model
+#========================================================
+
+library(vars)
+VAR1 = VAR(dfts, p=2)
+summary(VAR1)
+
+
+#========================================================
+# ii. quality checks
+#========================================================
+
+
+library(vars)
+VAR1 = VAR(dataVAR, p=1)
+summary(VAR1)
+
+
+
+
+
 
 
 
