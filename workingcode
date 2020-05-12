@@ -47,6 +47,7 @@ kpss.test(GDPadjusted)           #here hypothesis is h_o= stationary. small p va
 #Finding acf and pacf
 
 
+
 #========================================================
 # Part II. Multivariate model
 #========================================================
@@ -80,19 +81,40 @@ between order 2 and 4 is not much. In this context, we will move forward with la
 # ii. Estimation of the multivariate model
 #========================================================
 
-library(vars)
-VAR1 = VAR(dfts, p=2)
-summary(VAR1)
+VAR2 = VAR(dfts, p=2)
+summary(VAR2)       ## this code works
 
+xtable:: xtable(VAR2$varresult$gpd)
+xtable:: xtable(VAR2$varresult$un)
 
+This seems to be a good fit, as all coefficients of the estimated model are significant at the alpha= 0.05 level, including the constant and the last lag (2). 
 #========================================================
 # ii. quality checks
 #========================================================
 
+To check the quality of our estimated model, we can use a LjungBox test:
+  
+LjungBox(VAR2, lags=1:12)
 
-library(vars)
-VAR1 = VAR(dataVAR, p=1)
-summary(VAR1)
+The p-vale for the lag of order 2 has the most significant p-value, with lag4 being the second most significant (consistent with results above). 
+
+
+
+We can also use a normality test to check if distribution of residuals is normal: 
+  
+  normality.test(VAR2) 
+
+##CHECK THIS!
+The normality test tells us the we could reject the null hypothesis of normal distribution, no skewedness, and no kurtosis. 
+
+
+
+#========================================================
+# iii. granger causality tests
+#========================================================
+
+# test if XXXXXXXXXXXXX has no power in explaining YYYYYYYYYYY
+
 
 
 
