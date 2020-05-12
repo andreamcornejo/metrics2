@@ -1,27 +1,53 @@
----
-title: "Econometrics 2 HMW"
-author: "João Castello Branco and MJ"
-date: "21/03/2020"
-output:
-  pdf_document: default
-  html_document:
-    df_print: paged
----
+# import and prepare data
+GDPSERIES <- read.csv("GDP.csv",header=T)[-1:-4,]         #in order to start both the series in the same year
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(BETS)
-library(tidyverse)
-library(tsibble)
-library(stargazer)
-library(knitr)
-library(forecast)
-library(dynlm) #for function `dynlm()`
-library(vars) # for function `VAR()`
+## Univariate Analysis
+# Data Presentation
 
-```
+GDPSERIES$DATE<- NULL              #to remove the date coloum and only specify it as a series of data anf use frequency.
+GDPTIMESERIES<-ts(GDPSERIES ,frequency = 4,start = c(1948,1))
+autoplot(GDPTIMESERIES, ts.colour = 'red',ylab = "GDP (Billion dollars)",xlab = "Time")
 
-# 1 Univariate Analysis
 
-The BETS [package](https://cran.r-project.org/web/packages/BETS/vignettes/BETS_basic_usage.html) provides Brazilian Economic Time series from many institutions, the source of our time series are the IBGE (Brazilian institute of geograph and statistics) for the unemployment rate and the Brazilian Central Bank (BCB) for the a monthly proxy of GDP (it is the 'contemporaneous monthly index of national economic activity' and it is seen as a preview of the GDP, which is quarterly data)
+GDPTIMESERIEScomponents <- decompose(GDPTIMESERIES)   #to decompose into seasonal, trend and irregular components of the time series
+
+GDPTIMESERIEScomponents$seasonal
+GDPTIMESERIEScomponents$trend       #to view the estimated values stored in these coloums
+GDPTIMESERIEScomponents$random
+plot(GDPTIMESERIEScomponents) #to view the differnet components graphically
+
+#taking log, to compress huge changes in the variances
+logGDP<-log(GDPTIMESERIES)
+
+#however we still have trend which will be proven by the acf of logGDP
+
+
+
+
+
+
+
+
+
+
+GDPTIMESERIESseasonallytrendadjusted <- GDPTIMESERIES  - GDPTIMESERIEScomponents$trend
+GDPadjusted <- na.omit(GDPTIMESERIESseasonallytrendadjusted)
+autoplot(GDPadjusted, ylab = "GDP Trend Adjusted (Billion dollars)",xlab = "Time")
+acf(GDPadjusted)
+# Unit root and stationarity test
+
+adf.test(GDPadjusted)            #reject hypothesis that serie is non stationary, implies stationarity
+PP.test(GDPadjusted)             # the adf and pp test are unit root tests, rejecting it implies rej H_o=non stationary, which is what we need
+kpss.test(GDPadjusted)           #here hypothesis is h_o= stationary. small p value suggests we reject null, serie is non stationary according to this
+                                 #Case 2: Unit root test: Reject 𝐻 0  KPSS test: don`t reject 𝐻0.  Both imply that series is stationary.
+#o                                 ur serie is sttrend ationary
+
+
+
+#Finding acf and pacf
+
+
+
+
+
 
